@@ -134,14 +134,21 @@ render_markdown = function(strict = FALSE, fence_char = '`') {
   hook.o = function(class) {
     force(class)
     function(x, options) {
-      hook.t(x, options, options[[paste0('attr.', class)]], options[[paste0('class.', class)]])
+      hook.t(
+        x, options, options[[paste0('attr.', class)]],
+        c(options[[paste0('class.', class)]], paste0('chunk-', class))
+      )
     }
   }
   hook.r = function(x, options) {
     language = tolower(options$engine)
     if (language == 'node') language = 'javascript'
     if (!options$highlight) language = 'text'
-    attrs = block_attr(options$attr.source, options$class.source, language)
+    attrs = block_attr(
+      options$attr.source,
+      c(options$class.source, "chunk-source"),
+      language
+    )
     paste0('\n\n', fence, attrs, '\n', x, fence, '\n\n')
   }
   hooks = list()
