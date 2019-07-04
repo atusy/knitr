@@ -36,44 +36,44 @@ hook_src = knit_hooks$get("source")
 options_ = list(engine = "r", prompt = FALSE, highlight = TRUE)
 
 assert(
-  'Attributes for souce can be specified class.source and attr.source',
+  'Attributes for soruce can be specified by class.source and attr.source',
   identical(
     hook_src("1", c(options_, class.source = "a b")),
-    "\n\n```{.r .a .b}\n1\n```\n\n"
+    "\n\n```{.r .a .b .chunk-source}\n1\n```\n\n"
   ),
   identical(
     hook_src("1", c(options_, attr.source = ".a .b")),
-    "\n\n```{.r .a .b}\n1\n```\n\n"
+    "\n\n```{.r .chunk-source .a .b}\n1\n```\n\n"
   ),
   identical(
     hook_src("1", c(options_, class.source = "a", attr.source = "b='1'")),
-    "\n\n```{.r .a b='1'}\n1\n```\n\n"
+    "\n\n```{.r .a .chunk-source b='1'}\n1\n```\n\n"
   ),
   identical(
     hook_src("1", c(options_, attr.source = ".a b='1'")),
-    "\n\n```{.r .a b='1'}\n1\n```\n\n"
+    "\n\n```{.r .chunk-source .a b='1'}\n1\n```\n\n"
   )
 )
 
 hook_out = knit_hooks$get("output")
 
 assert(
-  'Attributes for souce can be specified class.source and attr.source',
+  'Attributes for ouptput can be specified by class.output and attr.output',
   identical(
     hook_out("1\n", c(options_, class.output = "a b")),
-    "\n\n```{.a .b}\n1\n```\n\n"
+    "\n\n```{.a .b .chunk-output}\n1\n```\n\n"
   ),
   identical(
     hook_out("1\n", c(options_, attr.output = ".a .b")),
-    "\n\n```{.a .b}\n1\n```\n\n"
+    "\n\n```{.chunk-output .a .b}\n1\n```\n\n"
   ),
   identical(
     hook_out("1\n", c(options_, class.output = "a", attr.output = "b='1'")),
-    "\n\n```{.a b='1'}\n1\n```\n\n"
+    "\n\n```{.a .chunk-output b='1'}\n1\n```\n\n"
   ),
   identical(
     hook_out("1\n", c(options_, attr.output = ".a b='1'")),
-    "\n\n```{.a b='1'}\n1\n```\n\n"
+    "\n\n```{.chunk-output .a b='1'}\n1\n```\n\n"
   )
 )
 
