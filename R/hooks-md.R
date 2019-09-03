@@ -82,7 +82,7 @@ hook_plot_md_pandoc = function(x, options, cap = .img.cap(options), style = NULL
     s = if (any(grepl("style=", s))) {
       sub("(style=[\'\"])", paste0("\\1", style), s)
     } else {
-      c(s, paste0("style='", style, "'"))
+      c(s, paste0('style="', style, '"'))
     }
   }
 
