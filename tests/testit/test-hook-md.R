@@ -12,7 +12,6 @@ opt <- function(w = NULL, h =NULL, ex = NULL, show = 'asis', cap = NULL, ...) {
   list(out.width = w, out.height = h, out.extra = ex, fig.show = show, fig.cap = cap, ...)
 }
 
-
 h = hook_plot_md_pandoc
 assert("Include plot as pandoc md", {
   (h(x, opt()) %==% "![](1.png)")
@@ -21,6 +20,7 @@ assert("Include plot as pandoc md", {
   (h(x, opt(cap = cap)) %==% sprintf("![%s](1.png)", cap))
   (h(x, opt(cap = cap), cap = "") %==% sprintf("![%s](1.png)", ""))
   (h(x, opt(ex = ex)) %==% sprintf("![](1.png){%s}", e))
+  (h(x, opt(ex = c(ex, "width=1"))) %==% sprintf("![](1.png){%s width=1}", e))
   (h(x, opt(ex = ex), style = style2) %==% sprintf("![](1.png){style='%s%s'}", style2, style1))
   (h(x, opt(), style = style2) %==% sprintf("![](1.png){style='%s'}", style2))
 })
