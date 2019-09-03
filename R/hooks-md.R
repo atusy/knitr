@@ -86,19 +86,20 @@ hook_plot_md_pandoc = function(x, options, cap = .img.cap(options), style = NULL
     }
   }
 
+  w = calc_rel_size(options[['fig.width']], options[['out.width']])
+  h = calc_rel_size(options[['fig.height']], options[['out.height']])
+
   at = sprintf(
     "{%s}",
-    paste(
-      c(
-        sprintf("width=%s", options[['out.width']]),
-        sprintf("height=%s", options[['out.height']]),
-        s
-      ),
-      collapse = " "
-    )
+    paste(c(sprintf("width=%s", w), sprintf("height=%s", h), s), collapse = " ")
   )
 
   sprintf('![%s](%s%s)%s', cap, base, .upload.url(x), if (at != "{}") at else "")
+}
+
+calc_rel_size = function(from, to) {
+  if (!grepl('%$', to) || !is_html_output()) return(to)
+  from * as.numeric(sub('%$', '', to)) * 100
 }
 
 css_align = function(align) {
