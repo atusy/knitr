@@ -33,9 +33,7 @@ hook_plot_md = function(x, options) {
 hook_plot_md_base = function(x, options) {
   if (options$fig.show == 'animate') return(hook_plot_html(x, options))
 
-  base = opts_knit$get('base.url') %n% ''
   cap = .img.cap(options)
-  alt = .img.cap(options, alt = TRUE)
 
   w = options[['out.width']]; h = options[['out.height']]
   s = options$out.extra; a = options$fig.align
@@ -45,58 +43,61 @@ hook_plot_md_base = function(x, options) {
   in_bookdown = isTRUE(opts_knit$get('bookdown.internal.label'))
   plot1 = ai || options$fig.cur <= 1L
   plot2 = ai || options$fig.cur == options$fig.num
+  add_link = function(x, target = NULL) {
+    if (is.null(lnk) || is.na(lnk)) return(x)
+    sprintf('[%s](%s)%s', x, lnk, sprintf('{target=%s}', target))
+  }
   if (is.null(w) && is.null(h) && is.null(s) && a == 'default' && !(pandoc_html && in_bookdown)) {
     # append <!-- --> to ![]() to prevent the figure environment in these cases
     nocap = cap == '' && !is.null(to <- pandoc_to()) && !grepl('^markdown', to) &&
       (options$fig.num == 1 || ai) && !grepl('-implicit_figures', pandoc_from())
-    res = sprintf('![%s](%s%s)', cap, base, .upload.url(x))
-    if (!is.null(lnk) && !is.na(lnk)) res = sprintf('[%s](%s)', res, lnk)
+    res = add_link(hook_plot_md_pandoc(x, options, cap = cap))
     res = paste0(res, if (nocap) '<!-- -->' else '', if (is_latex_output()) ' ' else '')
     return(res)
-  }
-  add_link = function(x) {
-    if (is.null(lnk) || is.na(lnk)) return(x)
-    sprintf('<a href="%s" target="_blank">%s</a>', lnk, x)
   }
   # use HTML syntax <img src=...>
   if (pandoc_html) {
     d1 = if (plot1) sprintf('<div class="figure"%s>\n', css_text_align(a))
     d2 = sprintf('<p class="caption">%s</p>', cap)
-    img = sprintf(
-      '<img src="%s" alt="%s" %s />',
-      paste0(opts_knit$get('base.url'), .upload.url(x)), alt, .img.attr(w, h, s)
-    )
-    img = add_link(img)
+    img = add_link(hook_plot_md_pandoc(x, options, cap), target = "_blank")
     # whether to place figure caption at the top or bottom of a figure
     if (isTRUE(options$fig.topcaption)) {
       paste0(d1, if (ai || options$fig.cur <= 1) d2, img, if (plot2) '</div>')
     } else {
       paste0(d1, img, if (plot2) paste0('\n', d2, '\n</div>'))
     }
-  } else add_link(.img.tag(
-    .upload.url(x), w, h, alt,
-    c(s, sprintf('style="%s"', css_align(a)))
-  ))
+  } else {
+    add_link(hook_plot_md_pandoc(x, options, cap = cap, style = css_align(a)), target = "_blank")
+  }
 }
 
-hook_plot_md_pandoc = function(x, options) {
+hook_plot_md_pandoc = function(x, options, cap = .img.cap(options), style = NULL) {
   if (options$fig.show == 'animate') return(hook_plot_html(x, options))
 
   base = opts_knit$get('base.url') %n% ''
-  cap = .img.cap(options)
+
+  s = options[['out.extra']]
+  if (!is.null(style)) {
+    s = if (any(grepl("style=", s))) {
+      sub("(style=[\'\"])", paste0("\\1", style), s)
+    } else {
+      c(s, paste0("style=", style))
+    }
+  }
+
   at = sprintf(
     "{%s}",
     paste(
       c(
         sprintf("width=%s", options[['out.width']]),
         sprintf("height=%s", options[['out.height']]),
-        options[['out.extra']]
+        s
       ),
       collapse = " "
     )
   )
 
-  sprintf('![%s](%s%s)%s', cap, base, .upload.url(x), at)
+  sprintf('![%s](%s%s)%s', cap, base, .upload.url(x), if (at != "{}") at)
 }
 
 css_align = function(align) {
