@@ -81,7 +81,7 @@ hook_plot_md_pandoc = function(x, options, cap = .img.cap(options), style = NULL
     s = if (any(grepl("style=", s))) {
       sub("(style=[\'\"])", paste0("\\1", style), s)
     } else {
-      c(s, paste0("style=", style))
+      c(s, paste0("style='", style, "'"))
     }
   }
 
@@ -97,7 +97,7 @@ hook_plot_md_pandoc = function(x, options, cap = .img.cap(options), style = NULL
     )
   )
 
-  sprintf('![%s](%s%s)%s', cap, base, .upload.url(x), if (at != "{}") at)
+  sprintf('![%s](%s%s)%s', cap, base, .upload.url(x), if (at != "{}") at else "")
 }
 
 css_align = function(align) {
