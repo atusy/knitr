@@ -17,7 +17,7 @@ hook_plot_md = function(x, options) {
     }
     if (office_output) {
       if (options$fig.align != 'default') {
-        warning('Chunk options fig.align is not supported for ', to, ' output')
+        warning('The chunk option fig.align is not supported for ', to, ' output')
         options$fig.align = 'default'
       }
       return(hook_plot_md_pandoc(x, options))
