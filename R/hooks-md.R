@@ -45,7 +45,7 @@ hook_plot_md_base = function(x, options) {
   plot2 = ai || options$fig.cur == options$fig.num
   add_link = function(x, target = NULL) {
     if (is.null(lnk) || is.na(lnk)) return(x)
-    sprintf('[%s](%s)%s', x, lnk, if (is.null(target)) "" else sprintf('{target=%s}', target))
+    sprintf('[%s](%s)%s', x, lnk, if (is.null(target)) "" else sprintf('{target="%s"}', target))
   }
 
   if (is.null(w) && is.null(h) && is.null(s) && a == 'default' && !(pandoc_html && in_bookdown)) {
