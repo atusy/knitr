@@ -984,3 +984,7 @@ make_unique = function(x) {
   s = ifelse(is.na(s), i, s)
   paste0(x, s)
 }
+
+try_out = function(code) {
+  paste('try({', comment_out(code, '  ', newline = FALSE), '})', sep = '\n')
+}

@@ -153,6 +153,7 @@ hook_purl = function(before, options, envir) {
   }
 
   code = options$code
+  if (isTRUE(options$error)) code = try_out(code)
   if (isFALSE(options$eval)) code = comment_out(code, '# ', newline = FALSE)
   if (is.character(output)) {
     code = c(

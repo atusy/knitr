@@ -487,7 +487,10 @@ process_tangle.block = function(x) {
     eval(parse_only(unlist(stringr::str_extract_all(code, 'read_chunk\\(([^)]+)\\)'))))
   }
   code = parse_chunk(code)
-  if (isFALSE(ev)) code = comment_out(code, params$comment, newline = FALSE)
+  if (isTRUE(params$error)) code = try_out(code)
+  if (isFALSE(ev)) {
+    code = comment_out(code, params$comment, newline = FALSE)
+  }
   if (opts_knit$get('documentation') == 0L) return(one_string(code))
   label_code(code, x$params.src)
 }
